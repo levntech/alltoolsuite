@@ -1,0 +1,55 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+    content: [
+      './src/app/**/*.{js,ts,jsx,tsx}',
+      './src/components/**/*.{js,ts,jsx,tsx}',
+    ],
+    safelist: [
+        'text-accent-blue',
+        'text-green-500',
+        'text-red-500',
+        'text-purple-500',
+        'text-yellow-500',
+        'text-pink-500',
+        'text-indigo-500',
+        'text-orange-500',
+        'text-blue-600',
+        "text-green-500",
+"text-red-500",
+"text-purple-500",
+"text-yellow-500",
+"text-pink-500",
+"text-indigo-500",
+"text-orange-500",
+"text-blue-600",
+"text-teal-500",
+"text-gray-500",
+"text-cyan-500",
+"text-blue-400",
+"text-green-600",
+"text-purple-600",
+"text-indigo-600",
+"text-teal-600",
+"text-orange-600",
+"text-blue-500",
+"text-pink-600",
+"text-green-400",
+"text-purple-400",
+"text-yellow-600",
+"text-teal-400",
+
+      ],
+    theme: {
+      extend: {
+        fontFamily: {
+          poppins: ['Poppins', 'sans-serif'],
+        },
+        colors: {
+          'primary-dark': '#1a202c',
+          'primary-light': '#f7fafc',
+          'accent-blue': '#3182ce',
+        },
+      },
+    },
+    plugins: [],
+  };
