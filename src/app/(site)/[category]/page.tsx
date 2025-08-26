@@ -5,12 +5,14 @@
      import { useParams } from 'next/navigation';
      import Header from '@/components/Header';
      import Card from '@/components/Card';
-     import { categories } from '@/lib/data';
+     import { buildUICategories } from '@/lib/tools.utils';
      import { trackEvent } from '@/lib/analytics';
 
      export default function CategoryPage() {
         console.log( useParams() );
-       const { category } = useParams<{ category: string}>();
+       const params = useParams<{ category: string }>() || { category: '' };
+       const category = params.category;
+        const categories = buildUICategories();
        const [searchQuery, setSearchQuery] = useState('');
        const [isScrolled, setIsScrolled] = useState(false);
 
@@ -56,7 +58,7 @@
                      icon={tool.icon}
                      title={tool.title}
                      desc={categoryData.desc}
-                     path={tool.path}
+                     path={`${categoryData.path}/${tool.slug}`}
                      isTool
                      category={categoryData.title}
                      iconColor={categoryData.color}

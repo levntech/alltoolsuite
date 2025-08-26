@@ -1,0 +1,26 @@
+[
+  {
+    "id": "tool-case-converter",
+    "title": "Case Converter",
+    "slug": "case-converter",
+    "category": "text-tools",
+    "shortDescription": "Convert text between upper/lower/camel case.",
+    "tags": ["text", "conversion", "case"]
+  },
+  {
+    "id": "tool-meta-tag-generator",
+    "title": "Meta Tag Generator",
+    "slug": "meta-tag-generator",
+    "category": "seo-tools",
+    "shortDescription": "Generate SEO-optimized meta tags.",
+    "tags": ["seo", "meta tags", "optimization"]
+  },
+  {
+    "id": "tool-keyword-density",
+    "title": "Keyword Density",
+    "slug": "keyword-density",
+    "category": "seo-tools",
+    "shortDescription": "Analyze keyword frequency in your text.",
+    "tags": ["seo", "keywords", "analysis"]
+  }
+]

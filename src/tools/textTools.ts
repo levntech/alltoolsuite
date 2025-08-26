@@ -23,57 +23,123 @@ export interface WordCountResult {
     position: { start: number; end: number };
   }
 
-  // Utility to validate non-empty strings
-  const validateTextInput = (text: string, toolName: string): void => {
-    if (!text || typeof text !== 'string') {
-      throw new Error(`${toolName}: Input text must be a non-empty string`);
+type CaseType =
+  | 'upper'
+  | 'lower'
+  | 'title'
+  | 'sentence'
+  | 'camel'
+  | 'snake'
+  | 'kebab'
+  | 'pascal';
+
+interface ConversionResult {
+  output: string;
+  metadata: {
+    originalInput: string;
+    convertedTo: CaseType;
+    locale: string;
+    charactersChanged: number;
+    wordCount: number;
+  };
+}
+
+// Dummy validation util (replace with your real one)
+const validateTextInput = (text: string, toolName: string) => {
+  if (typeof text !== 'string' || !text.trim()) {
+    throw new Error(`${toolName}: Invalid input`);
+  }
+};
+
+export const caseConverter = (
+  text: string,
+  options: Record<string, any>={}
+): ConversionResult => {
+  const caseType: CaseType = options.caseType || 'upper';
+  const locale: string  = options.locale;
+
+  validateTextInput(text, 'Case Converter');
+
+  // Auto-detect locale if not provided
+  const effectiveLocale =
+    locale || Intl.DateTimeFormat().resolvedOptions().locale || 'en-US';
+
+  let output = '';
+
+  switch (caseType) {
+    case 'upper':
+      output = text.toLocaleUpperCase(effectiveLocale);
+      break;
+    case 'lower':
+      output = text.toLocaleLowerCase(effectiveLocale);
+      break;
+    case 'title':
+      output = text
+        .toLocaleLowerCase(effectiveLocale)
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(word => word.charAt(0).toLocaleUpperCase(effectiveLocale) + word.slice(1))
+        .join(' ');
+      break;
+    case 'sentence':
+      output = text
+        .toLocaleLowerCase(effectiveLocale)
+        .replace(/(^\s*\w|[.!?]\s*\w)/g, char =>
+          char.toLocaleUpperCase(effectiveLocale)
+        );
+      break;
+    case 'camel':
+      output = text
+        .toLocaleLowerCase(effectiveLocale)
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((word, i) =>
+          i === 0
+            ? word
+            : word.charAt(0).toLocaleUpperCase(effectiveLocale) + word.slice(1)+" "
+        )
+        .join('');
+      break;
+    case 'pascal':
+      output = text
+        .toLocaleLowerCase(effectiveLocale)
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(word => word.charAt(0).toLocaleUpperCase(effectiveLocale) + word.slice(1))
+        .join('');
+      break;
+    case 'snake':
+      output = text
+        .toLocaleLowerCase(effectiveLocale)
+        .split(/\s+/)
+        .filter(Boolean)
+        .join('_');
+      break;
+    case 'kebab':
+      output = text
+        .toLocaleLowerCase(effectiveLocale)
+        .split(/\s+/)
+        .filter(Boolean)
+        .join('-');
+      break;
+    default:
+      output = text;
+  }
+
+  return {
+    output,
+    metadata: {
+      originalInput: text,
+      convertedTo: caseType,
+      locale: effectiveLocale,
+      charactersChanged: text
+        .split('')
+        .filter((char, i) => output[i] !== char).length,
+      wordCount: text.trim().split(/\s+/).filter(Boolean).length
     }
   };
+};
 
-  // Case Converter: Efficiently converts text to different cases
-  export const caseConverter = (
-    text: string,
-    caseType: 'upper' | 'lower' | 'title' | 'sentence' | 'camel' | 'snake'
-  ): string => {
-    // Input validation
-    validateTextInput(text, 'Case Converter');
-
-    // Use a switch for clear, maintainable case handling
-    switch (caseType) {
-      case 'upper':
-        return text.toUpperCase();
-      case 'lower':
-        return text.toLowerCase();
-      case 'title':
-        return text
-          .toLowerCase()
-          .split(/\s+/)
-          .filter(Boolean) // Remove empty strings from multiple spaces
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-      case 'sentence':
-        return text
-          .toLowerCase()
-          .replace(/(^\w|\.\s+\w)/g, char => char.toUpperCase());
-      case 'camel':
-        return text
-          .toLowerCase()
-          .split(/\s+/)
-          .filter(Boolean)
-          .map((word, index) =>
-            index === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1)
-          )
-          .join('');
-      case 'snake':
-        return text
-          .toLowerCase()
-          .split(/\s+/)
-          .filter(Boolean)
-          .join('_');
-      default:
-        throw new Error('Case Converter: Invalid case type');
-    }
-  };
 
   // Word Counter: Counts words, characters, sentences, paragraphs, and estimates reading time
   export const wordCounter = (text: string): WordCountResult => {

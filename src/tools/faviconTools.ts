@@ -4,7 +4,7 @@
 import { createLogger, transports, format } from 'winston';
 import DOMPurify from 'dompurify';
 import JSZip from 'jszip';
-import { toIco } from 'icojs';
+import toIco from 'icojs';
 
 // Logger setup for client-side logging
 const logger = createLogger({
