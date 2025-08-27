@@ -51,7 +51,7 @@ const validateTextInput = (text: string, toolName: string) => {
   }
 };
 
-export const caseConverter = (
+export const caseConverterLogic = (
   text: string,
   options: Record<string, any>={}
 ): ConversionResult => {
