@@ -334,83 +334,83 @@ export const imageToFavicon = async (
 };
 
 // Generate Favicon Package: Create a zip file with favicons for multiple platforms
-export const generateFaviconPackage = async (
-  sourceDataUrl: string,
-  options: FaviconOptions = {}
-): Promise<FaviconPackage> => {
-  try {
-    if (!sourceDataUrl) {
-      throw new FaviconToolError(
-        'Generate Favicon Package: Source image cannot be empty',
-        'EMPTY_SOURCE',
-        'Please provide a source image or favicon.'
-      );
-    }
+// export const generateFaviconPackage = async (
+//   sourceDataUrl: string,
+//   options: FaviconOptions = {}
+// ): Promise<FaviconPackage> => {
+//   try {
+//     if (!sourceDataUrl) {
+//       throw new FaviconToolError(
+//         'Generate Favicon Package: Source image cannot be empty',
+//         'EMPTY_SOURCE',
+//         'Please provide a source image or favicon.'
+//       );
+//     }
 
-    const sizes = [
-      { size: 16, name: 'favicon-16x16.png' },
-      { size: 32, name: 'favicon-32x32.png' },
-      { size: 64, name: 'favicon-64x64.png' },
-      { size: 180, name: 'apple-touch-icon.png' }, // Apple Touch Icon
-      { size: 192, name: 'android-chrome-192x192.png' }, // Android Chrome
-      { size: 512, name: 'android-chrome-512x512.png' },
-      { size: 144, name: 'ms-icon-144x144.png' }, // Microsoft Windows
-    ];
+//     const sizes = [
+//       { size: 16, name: 'favicon-16x16.png' },
+//       { size: 32, name: 'favicon-32x32.png' },
+//       { size: 64, name: 'favicon-64x64.png' },
+//       { size: 180, name: 'apple-touch-icon.png' }, // Apple Touch Icon
+//       { size: 192, name: 'android-chrome-192x192.png' }, // Android Chrome
+//       { size: 512, name: 'android-chrome-512x512.png' },
+//       { size: 144, name: 'ms-icon-144x144.png' }, // Microsoft Windows
+//     ];
 
-    // Generate favicons for each size
-    const faviconPromises = sizes.map(async ({ size, name }) => {
-      const favicon = await imageToFavicon(sourceDataUrl, size, options);
-      const base64Data = favicon.dataUrl.split(',')[1]; // Extract Base64 data
-      return { name, data: base64Data, favicon };
-    });
+//     // Generate favicons for each size
+//     const faviconPromises = sizes.map(async ({ size, name }) => {
+//       const favicon = await imageToFavicon(sourceDataUrl, size, options);
+//       const base64Data = favicon.dataUrl.split(',')[1]; // Extract Base64 data
+//       return { name, data: base64Data, favicon };
+//     });
 
-    const faviconResults = await Promise.all(faviconPromises);
-    const favicons = faviconResults.map(({ name, data }) => ({ name, data }));
-    const previews = faviconResults.map(({ favicon }) => favicon);
+//     const faviconResults = await Promise.all(faviconPromises);
+//     const favicons = faviconResults.map(({ name, data }) => ({ name, data }));
+//     const previews = faviconResults.map(({ favicon }) => favicon);
 
-    // Generate favicon.ico using icojs
-    const icoSizes = [16, 32, 64];
-    const icoImages = await Promise.all(
-      icoSizes.map(async (size) => {
-        const favicon = await imageToFavicon(sourceDataUrl, size, options);
-        const response = await fetch(favicon.dataUrl);
-        const arrayBuffer = await response.arrayBuffer();
-        return arrayBuffer;
-      })
-    );
+//     // Generate favicon.ico using icojs
+//     const icoSizes = [16, 32, 64];
+//     const icoImages = await Promise.all(
+//       icoSizes.map(async (size) => {
+//         const favicon = await imageToFavicon(sourceDataUrl, size, options);
+//         const response = await fetch(favicon.dataUrl);
+//         const arrayBuffer = await response.arrayBuffer();
+//         return arrayBuffer;
+//       })
+//     );
 
-    const faviconIco = await toIco(icoImages, { sizes: icoSizes });
+//     const faviconIco = await toIco(icoImages, { sizes: icoSizes });
 
-    // Create a zip file
-    const zip = new JSZip();
-    favicons.forEach(({ name, data }) => {
-      zip.file(name, data, { base64: true });
-    });
+//     // Create a zip file
+//     const zip = new JSZip();
+//     favicons.forEach(({ name, data }) => {
+//       zip.file(name, data, { base64: true });
+//     });
 
-    // Add favicon.ico
-    zip.file('favicon.ico', faviconIco, { binary: true });
+//     // Add favicon.ico
+//     zip.file('favicon.ico', faviconIco, { binary: true });
 
-    // Generate zip file
-    const zipContent = await zip.generateAsync({ type: 'base64' });
-    const zipDataUrl = `data:application/zip;base64,${zipContent}`;
-    const files = [...favicons.map((f) => f.name), 'favicon.ico'];
+//     // Generate zip file
+//     const zipContent = await zip.generateAsync({ type: 'base64' });
+//     const zipDataUrl = `data:application/zip;base64,${zipContent}`;
+//     const files = [...favicons.map((f) => f.name), 'favicon.ico'];
 
-    usageAnalytics.generateFaviconPackage++;
-    logger.info('Favicon package generated', {
-      fileCount: files.length,
-      usageCount: usageAnalytics.generateFaviconPackage,
-    });
+//     usageAnalytics.generateFaviconPackage++;
+//     logger.info('Favicon package generated', {
+//       fileCount: files.length,
+//       usageCount: usageAnalytics.generateFaviconPackage,
+//     });
 
-    return { zipDataUrl, files, previews };
-  } catch (error: any) {
-    logger.error('Generate Favicon Package failed', { error: error.message });
-    throw new FaviconToolError(
-      `Generate Favicon Package failed: ${error.message}`,
-      'PACKAGE_ERROR',
-      'Please ensure the source image is valid and try again.'
-    );
-  }
-};
+//     return { zipDataUrl, files, previews };
+//   } catch (error: any) {
+//     logger.error('Generate Favicon Package failed', { error: error.message });
+//     throw new FaviconToolError(
+//       `Generate Favicon Package failed: ${error.message}`,
+//       'PACKAGE_ERROR',
+//       'Please ensure the source image is valid and try again.'
+//     );
+//   }
+// };
 
 // Get usage analytics
 export const getUsageAnalytics = (): Record<string, number> => {

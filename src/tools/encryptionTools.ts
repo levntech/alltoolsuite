@@ -157,7 +157,7 @@ export const aesEncrypt = async (
         true,
         ['encrypt', 'decrypt']
       );
-      keyBase64ToReturn = arrayBufferToBase64(rawKey);
+      keyBase64ToReturn = arrayBufferToBase64(rawKey.buffer);
     } else {
       key = await base64ToCryptoKey(keyBase64);
     }

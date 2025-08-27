@@ -11,7 +11,7 @@ export const textTools: InternalToolConfig[] = [
             shortDescription: 'Convert text between upper/lower/camel case.',
             icon: 'FaFont',
             template: templates.TextToolTemplate,
-            logicLoader: () => import('../../tools/textTools').then(m => ({ default: m.caseConverter })),
+            logicLoader: () => import('../../tools/textTools').then(m => ({ default: m.caseConverterLogic })),
             props: { resultType: 'text' },
             keywords: ['text tools', 'convert case', 'upper lower camel'],
             id: 'tool-case-converter',

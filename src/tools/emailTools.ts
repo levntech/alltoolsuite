@@ -119,15 +119,15 @@ export const validateEmail = async (email: string): Promise<{ isValid: boolean; 
           `https://dns-lookup.whoisxmlapi.com/api/v1?apiKey=${apiKey}&domainName=${domain}&recordType=MX`
         );
 
-        if (!response.success || response.error) {
-          throw new Error(response.error?.message || 'Failed to fetch MX records');
+        if (!response.data.success || response.data.error) {
+          throw new Error(response.data.error?.message || 'Failed to fetch MX records');
         }
 
-        const mxRecords = response.records.MX || [];
+        const mxRecords = response.data.records.MX || [];
         if (mxRecords.length === 0) {
           errors.push('No MX records found for this domain. It may not be configured to receive emails.');
         } else {
-          logger.info('MX records found', { domain, mxRecords: mxRecords.map((r) => r.host) });
+          logger.info('MX records found', { domain, mxRecords: mxRecords.map((r:any) => r.host) });
         }
       } catch (apiError: any) {
         logger.warn('MX record check failed, falling back to basic validation', {
